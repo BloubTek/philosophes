@@ -5,7 +5,7 @@
 ** Login   <ferran_m@epitech.eu>
 ** 
 ** Started on  Tue Mar 18 15:18:14 2014 morgane ferrandis
-** Last update Tue Mar 18 15:41:41 2014 severine roy
+** Last update Tue Mar 18 17:36:30 2014 morgane ferrandis
 */
 
 #ifndef PHILO_H_
