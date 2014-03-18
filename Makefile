@@ -5,12 +5,12 @@
 ## Login   <bloubtek@epitech.net>
 ## 
 ## Started on  Tue Mar 18 15:25:42 2014 morgane ferrandis
-## Last update Tue Mar 18 16:06:43 2014 morgane ferrandis
+## Last update Tue Mar 18 17:24:35 2014 morgane ferrandis
 ##
 
 NAME		= philo
 
-SRC		=
+SRC		= /src/main.c
 
 OBJ		= $(SRC:.c=.o)
 
