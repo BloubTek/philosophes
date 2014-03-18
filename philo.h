@@ -5,22 +5,24 @@
 ** Login   <ferran_m@epitech.eu>
 ** 
 ** Started on  Tue Mar 18 15:18:14 2014 morgane ferrandis
-** Last update Tue Mar 18 15:22:23 2014 morgane ferrandis
+** Last update Tue Mar 18 15:41:41 2014 severine roy
 */
 
 #ifndef PHILO_H_
 # define PHILO_H_
 
-typedef struct		s_baguette
+typedef			enum
 {
+  IS_USED,
+  IS_NOT_USED
   
-}			t_baguette;
+}			stick;
 
 typedef struct		s_philo
 {
   int			nb_philo;
-  t_baguette		right;
-  t_baguette		left;
+  stick			right;
+  stick			left;
   struct s_philo	*next;
 }			t_philo;
 
