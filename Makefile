@@ -5,19 +5,22 @@
 ## Login   <bloubtek@epitech.net>
 ## 
 ## Started on  Tue Mar 18 15:25:42 2014 morgane ferrandis
-## Last update Tue Mar 18 17:24:35 2014 morgane ferrandis
+## Last update Wed Mar 19 16:51:45 2014 severine roy
 ##
 
 NAME		= philo
 
-SRC		= /src/main.c
+SRC		= main.c \
+		  actions.c
 
 OBJ		= $(SRC:.c=.o)
+
+CFLAGS		= -pthread -Wall -Wextra -W
 
 all:		$(NAME)
 
 $(NAME):	$(OBJ)
-		cc -o $(NAME) $(OBJ)
+		cc -o $(NAME) $(OBJ) $(CFLAGS)
 
 clean:
 		rm -f $(OBJ)

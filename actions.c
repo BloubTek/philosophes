@@ -5,12 +5,16 @@
 ** Login   <roy_s@epitech.net>
 ** 
 ** Started on  Wed Mar 19 12:34:10 2014 severine roy
-** Last update Wed Mar 19 16:47:35 2014 severine roy
+** Last update Wed Mar 19 20:11:43 2014 severine roy
 */
 
 #include <pthread.h>
 #include <stdio.h>
 #include "philo.h"
+
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+
+int		rice;
 
 void		give_stick(t_philo *p)
 {
@@ -30,8 +34,8 @@ void		give_stick(t_philo *p)
 	  to_use--;
 	}
       p = p->next;
-      if (p)
-	p = p->head;
+      if (!p)
+      p = p->head;
     }
 }
 
@@ -41,9 +45,8 @@ void		*eat(void *p)
 
   philo = (t_philo*)p;
   printf("Philosophe %d is eating\n", philo->nb_philo);
-  //sleep(2);
+  sleep(5);
   //  printf("Philosophe %d stopped eating\n", philo->nb_philo);
-  philo->left = IS_NOT_USED;
   philo->right = IS_NOT_USED;
   philo->life -= 10;
   philo->etat = EAT;
@@ -57,9 +60,12 @@ void		*think(void *p)
 
   philo = (t_philo*)p;
   printf("Philosophe %d is thinking\n", philo->nb_philo);
-  //sleep(2);
+  sleep(5);
   //printf("Philosophe %d stopped thinking\n", philo->nb_philo);
-  philo->right = IS_NOT_USED;
+  if (philo->right == IS_USED)  
+    philo->right = IS_NOT_USED;
+  else
+    philo->left = IS_NOT_USED;
   philo->etat = THINK;
   philo->life -= 10;
   give_stick(philo->next);
@@ -73,7 +79,7 @@ void		*rest(void *p)
   philo = (t_philo*)p;
   printf("Philosophe %d is sleeping\n", philo->nb_philo);
   philo->etat = SLEEP;
-  //sleep(2);
+  sleep(5);
   //printf("Philosophe %d stopped sleeping\n", philo->nb_philo);
   philo->life -= 10;  
   pthread_exit(NULL);

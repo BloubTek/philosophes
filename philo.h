@@ -5,7 +5,7 @@
 ** Login   <ferran_m@epitech.eu>
 ** 
 ** Started on  Tue Mar 18 15:18:14 2014 morgane ferrandis
-** Last update Wed Mar 19 14:50:08 2014 severine roy
+** Last update Wed Mar 19 19:35:12 2014 severine roy
 */
 
 #ifndef PHILO_H_
@@ -13,9 +13,8 @@
 
 typedef			enum
 {
-  IS_USED,
-  IS_NOT_USED
-  
+  IS_NOT_USED,
+  IS_USED
 }			e_stick;
 
 typedef			enum
