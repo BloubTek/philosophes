@@ -5,41 +5,94 @@
 ** Login   <roy_s@epitech.net>
 ** 
 ** Started on  Tue Mar 18 14:00:59 2014 severine roy
-** Last update Tue Mar 18 15:18:47 2014 severine roy
+** Last update Wed Mar 19 16:45:04 2014 severine roy
 */
 
 #include <pthread.h>
 #include <stdio.h>
+#include "philo.h"
 
 # define NB_PHILO  7
 
-void		*loop(void *name)
+void			loop_philo(t_philo *p)
 {
-  printf("%d\n", *(int*)name);
-}
+  t_philo		*p2;
+  pthread_t		t;
 
-int		main()
-{
-  pthread_t	p[NB_PHILO];
-  int		name[NB_PHILO];
-  int		i;
-
-  i = 0;
-  while (i < NB_PHILO)
+  p2 = p;
+  p->head = p2; 
+  while (42)
     {
-      name[i] = i;
-      if (pthread_create(&p[i], NULL, loop, &name[i]) != 0)
+      while (p)
 	{
-	  printf("Create thread error\n");
-	  return (-1);
+	  printf("life: %d\n", p->life);
+	  if (p->life > 9)
+	    if (p->right == IS_USED && p->left == IS_USED)
+	      {
+		if ((pthread_create(&t, NULL, &eat, p)) != 0)
+		  printf("bloub\n");
+	      }
+	    else if (p->etat == EAT && (p->left == IS_USED || p->right == IS_USED))
+	      {	      
+		if ((pthread_create(&t, NULL, &think, p)) != 0)
+		  printf("oiseau crevette\n");
+	      }
+	    else
+	      {
+		if ((pthread_create(&t, NULL, &rest, p)) != 0)
+		  printf("fouff\n");
+	      }
+	  p = p->next;
+	  //  pthread_join(t, NULL);
 	}
-      ++i;
+      printf("laaaaa\n");
+      sleep(5);
+      p = p2;
     }
-  i = 0;
-  while (i < NB_PHILO)
-    {
-      pthread_join(p[i], NULL);
-      ++i;
-    }
-  return (0);
 }
+
+void			init_philo(t_philo *p)
+{
+  t_philo		*p2;
+  int			i;
+  int			stick;
+
+  i = 1;
+  stick = NB_PHILO - 2;
+  p->left = IS_USED;
+  p->right = IS_USED;
+  p->nb_philo = 0;
+  p->etat = SLEEP;
+  p->life = 100;
+  while (i < 7)
+    {
+      p2 = malloc(sizeof(t_philo));
+      p2->nb_philo = i;
+      p2->left = IS_NOT_USED;
+      p2->right = IS_NOT_USED;
+      p2->etat = SLEEP;
+      p2->life = 100;
+      if (stick)
+	{
+	  p2->left = IS_USED;
+	  --stick;
+	}
+      if (stick)
+	{
+	  p2->right = IS_USED;
+	  --stick;
+	}
+      p->next = p2;
+      p = p2;
+      ++i;
+    }
+}
+
+int			main()
+{
+  t_philo		p;
+  
+  init_philo(&p);
+  loop_philo(&p);
+}
+
