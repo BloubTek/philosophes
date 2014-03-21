@@ -5,7 +5,7 @@
 ** Login   <roy_s@epitech.net>
 ** 
 ** Started on  Tue Mar 18 14:00:59 2014 severine roy
-** Last update Fri Mar 21 13:16:03 2014 severine roy
+** Last update Fri Mar 21 19:32:56 2014 severine roy
 */
 
 #include <pthread.h>
@@ -16,26 +16,37 @@
 
 # define NB_PHILO  7
 
+int	rice = 10;
+
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+
 void			*loop_philo(void  *t)
 {
   t_philo		*p;
- 
+  static int		i = 1;
+
   p = (t_philo*)t;
-  while (p->life > 9)
+  while (42)
     {
-      if (p->etat == THINK)
+      //pthread_mutex_lock(&m);	
+      while (rice > 0)
 	{
+	  
+	  /* if (p->etat == THINK) */
+	  /*   { */
+	  /*     if (p->right == IS_USED && p->left == IS_USED) */
+	  /* 	eat(p); */
+	  /*   } */
 	  if (p->right == IS_USED && p->left == IS_USED)
 	    eat(p);
+	  else if (p->right == IS_USED || p->left == IS_USED)
+	    think(p);
+	  else if (p->right == IS_NOT_USED && p->left == IS_NOT_USED)
+	    rest(p);
+	  i++;
+	  //pthread_mutex_unlock(&m);	
 	}
-      else if (p->right == IS_USED && p->left == IS_USED)
-	eat(p);
-      else if (p->right == IS_USED || p->left == IS_USED)
-	think(p);
-      else if (p->right == IS_NOT_USED && p->left == IS_NOT_USED)
-	rest(p);
-      else
-	printf("bordel\n");
+      return (t);
     }
   return (t);
 }
@@ -51,7 +62,8 @@ t_philo			*init_philo(t_philo *p)
   stick = NB_PHILO;
   while (i < NB_PHILO)
     {
-      p2->next = malloc(sizeof(*p));
+      if ((p2->next = malloc(sizeof(*p))) == NULL)
+	return (p);
       p2->next->prev = p2;
       p2->life = 100;
       p2->etat = SLEEP;
@@ -91,7 +103,8 @@ void		loop(t_philo *p)
   tmp = p;
   while (i < NB_PHILO)
     {
-      pthread_create(&t[i], NULL, &loop_philo, tmp);
+      if ((pthread_create(&t[i], NULL, &loop_philo, tmp)) != 0)
+    return ;
       tmp = tmp->next;
       i++;
     }
@@ -108,7 +121,8 @@ int			main()
 {
   t_philo		*p;
   
-  p = malloc(sizeof(*p));
+  if ((p = malloc(sizeof(*p))) == NULL)
+    return (-1);
   p = init_philo(p);
   loop(p);
   return (0);
