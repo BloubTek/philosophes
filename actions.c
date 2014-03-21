@@ -5,11 +5,12 @@
 ** Login   <roy_s@epitech.net>
 ** 
 ** Started on  Wed Mar 19 12:34:10 2014 severine roy
-** Last update Wed Mar 19 20:11:43 2014 severine roy
+** Last update Fri Mar 21 13:15:20 2014 severine roy
 */
 
 #include <pthread.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "philo.h"
 
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -23,56 +24,51 @@ void		give_stick(t_philo *p)
   to_use = 1;
   while (to_use != 0)
     {
-      if (p->left == IS_NOT_USED)
+      if (p->prev->etat == THINK && p->prev->right == IS_NOT_USED)
 	{
-	  p->left = IS_USED;
-	  to_use--;
+	  p->prev->right = IS_USED;
+	  to_use = 0;
 	}
-      else if (p->right == IS_NOT_USED)
+      else if (p->next->left == IS_NOT_USED)
 	{
-	  p->right = IS_USED;
-	  to_use--;
+	  p->next->left = IS_USED;
+	  to_use = 0;
 	}
-      p = p->next;
-      if (!p)
-      p = p->head;
+      else
+	{
+	  p->prev->right = IS_USED;
+	  to_use = 0;
+	}
     }
 }
 
-void		*eat(void *p)
+void		eat(void *p)
 {
   t_philo	*philo;
 
   philo = (t_philo*)p;
   printf("Philosophe %d is eating\n", philo->nb_philo);
-  sleep(5);
-  //  printf("Philosophe %d stopped eating\n", philo->nb_philo);
+  sleep(1);
   philo->right = IS_NOT_USED;
+  philo->left = IS_NOT_USED;
   philo->life -= 10;
   philo->etat = EAT;
-  give_stick(philo->next);
-  pthread_exit(NULL);
-}
+  give_stick(philo);
+  give_stick(philo);
+ }
 
-void		*think(void *p)
+void		think(void *p)
 {
   t_philo       *philo;
 
   philo = (t_philo*)p;
   printf("Philosophe %d is thinking\n", philo->nb_philo);
   sleep(5);
-  //printf("Philosophe %d stopped thinking\n", philo->nb_philo);
-  if (philo->right == IS_USED)  
-    philo->right = IS_NOT_USED;
-  else
-    philo->left = IS_NOT_USED;
   philo->etat = THINK;
   philo->life -= 10;
-  give_stick(philo->next);
-  pthread_exit(NULL);
 }
 
-void		*rest(void *p)
+void		rest(void *p)
 {
   t_philo       *philo;
 
@@ -80,7 +76,5 @@ void		*rest(void *p)
   printf("Philosophe %d is sleeping\n", philo->nb_philo);
   philo->etat = SLEEP;
   sleep(5);
-  //printf("Philosophe %d stopped sleeping\n", philo->nb_philo);
-  philo->life -= 10;  
-  pthread_exit(NULL);
+  philo->life -= 10;
 }

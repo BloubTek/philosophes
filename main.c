@@ -5,7 +5,7 @@
 ** Login   <roy_s@epitech.net>
 ** 
 ** Started on  Tue Mar 18 14:00:59 2014 severine roy
-** Last update Wed Mar 19 20:04:51 2014 severine roy
+** Last update Fri Mar 21 13:16:03 2014 severine roy
 */
 
 #include <pthread.h>
@@ -21,16 +21,21 @@ void			*loop_philo(void  *t)
   t_philo		*p;
  
   p = (t_philo*)t;
-  if (p->life > 9)
+  while (p->life > 9)
     {
-      printf("life: %d\n", p->life);
-      printf("philo %d a bg: %d, %d\n", p->nb_philo, p->left, p->right);
-      if (p->right == IS_USED && p->left == IS_USED)
+      if (p->etat == THINK)
+	{
+	  if (p->right == IS_USED && p->left == IS_USED)
+	    eat(p);
+	}
+      else if (p->right == IS_USED && p->left == IS_USED)
 	eat(p);
-      else if (p->etat == EAT && (p->left == IS_USED || p->right == IS_USED))
+      else if (p->right == IS_USED || p->left == IS_USED)
 	think(p);
-      else
+      else if (p->right == IS_NOT_USED && p->left == IS_NOT_USED)
 	rest(p);
+      else
+	printf("bordel\n");
     }
   return (t);
 }
@@ -47,28 +52,34 @@ t_philo			*init_philo(t_philo *p)
   while (i < NB_PHILO)
     {
       p2->next = malloc(sizeof(*p));
+      p2->next->prev = p2;
       p2->life = 100;
       p2->etat = SLEEP;
       p2->right = IS_NOT_USED;
       p2->left = IS_NOT_USED;
       p2->nb_philo = i;
-       if (stick)
+      p2->head = p;
+      if (stick && i%2 == 0)
 	{
 	  p2->left = IS_USED;
-	  --stick;
-	}
-      if (stick)
+	  stick--;
+	}   
+      if (stick && i%2 == 0)
 	{
 	  p2->right = IS_USED;
-	  --stick;
+	  stick--;
+	}   
+      if (i == 6)
+	{
+	  p2->next = p;
+	  p->prev = p2;	
 	}
-      p2 = p2->next;
+      else
+	p2 = p2->next;
       ++i;
-     }
+    }
   return (p);
 }
-
-
 
 void		loop(t_philo *p)
 {
@@ -76,24 +87,21 @@ void		loop(t_philo *p)
   int			i;
   pthread_t		t[NB_PHILO];
   
-  while (42)
+  i = 0;
+  tmp = p;
+  while (i < NB_PHILO)
     {
-      i = 0;
-      tmp = p;
-      while (i < NB_PHILO)
-	{
-	  pthread_create(&t[i], NULL, &loop_philo, tmp);
-	  tmp = tmp->next;
-	  i++;
-	}
-      i = 0;
-      while (i < NB_PHILO)
-	{
-	  pthread_join(t[i], NULL);
-	  ++i;
-	}
-      printf("-------------------------------------------\n");
+      pthread_create(&t[i], NULL, &loop_philo, tmp);
+      tmp = tmp->next;
+      i++;
     }
+  i = 0;
+  while (i < NB_PHILO)
+    {
+      pthread_join(t[i], NULL);
+      ++i;
+    }
+  printf("-------------------------------------------\n");
 }
 
 int			main()

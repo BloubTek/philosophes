@@ -5,7 +5,7 @@
 ** Login   <ferran_m@epitech.eu>
 ** 
 ** Started on  Tue Mar 18 15:18:14 2014 morgane ferrandis
-** Last update Wed Mar 19 19:35:12 2014 severine roy
+** Last update Thu Mar 20 15:10:12 2014 severine roy
 */
 
 #ifndef PHILO_H_
@@ -32,12 +32,13 @@ typedef struct		s_philo
   e_stick		right;
   e_stick		left;
   struct s_philo	*next;
+  struct s_philo	*prev;
   struct s_philo	*head;
 }			t_philo;
 
 
-void		*eat(void *);
-void		*think(void *);
-void		*rest(void *);
+void		eat(void *);
+void		think(void *);
+void		rest(void *);
 
 #endif /* !PHILO_H_ */
